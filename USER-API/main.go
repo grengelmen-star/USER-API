@@ -5,14 +5,48 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+	"user-api/models"
+	"user-api/storage"
 )
 
 func main() {
-	http.HandleFunc("/", homeHandler) // регистрация обработчика, в скобках первое значение - адресс, второй - функция обработчик
-	http.HandleFunc("/health", healthHandler)
-	http.HandleFunc("/time", timeHandler)
 
-	http.ListenAndServe(":8080", nil)
+	testUser := models.User{
+		Username: "EgorTester",
+		Email:    "test@gmail.com",
+	}
+
+	createdUser, err := storage.CreateUser(testUser)
+	if err != nil {
+		fmt.Println("Ошибка", err)
+	} else {
+		fmt.Printf("Создан пользователь: %+v\n", createdUser)
+	}
+	allUsers := storage.GetAllUsers()
+	fmt.Printf("Всего пользователей:%d\n", len(allUsers))
+	//http.HandleFunc("/", homeHandler) // регистрация обработчика, в скобках первое значение - адресс, второй - функция обработчик
+	//http.HandleFunc("/health", healthHandler)
+	//http.HandleFunc("/time", timeHandler)
+	/*http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "GET":
+			handlers.GetUsersHandler(w, r)
+		case "POST":
+			handlers.CreateUsersHandler(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	fmt.Println("Сервер запущен на http://localhost:8080")
+	fmt.Println("Доступные эндпоинты:")
+	fmt.Println("GET /    - Главная страница")
+	fmt.Println("GET /health - Проверка состояния")
+	fmt.Println("GET /time   - Текущее время")
+	fmt.Println("GET /users  - Все пользователи")
+	fmt.Println("GET /users/create  - Создать пользователя ")
+
+	http.ListenAndServe(":8080", nil)*/
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
